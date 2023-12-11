@@ -70,7 +70,12 @@ const Signup = () => {
 
         <View style={styles.googleBtn}>
           <AntDesign name="google" size={24} color="black" />
-          <Text>Sign up with Google</Text>
+          <Text style={{ fontSize: 17 }}>Sign up with Google</Text>
+        </View>
+
+        <View style={styles.signAlt}>
+          <Text style={{ fontSize: 17 }}>Already have an account?</Text>
+          <Text style={{ color: "brown", fontSize: 17 }}>Sign in</Text>
         </View>
       </View>
     </View>
@@ -136,6 +141,13 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignSelf: "center",
     gap: 10,
+  },
+  signAlt: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 25,
+    gap: 5,
   },
 });
 
