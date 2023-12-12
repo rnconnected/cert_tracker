@@ -1,20 +1,21 @@
 import React, { useRef } from "react";
+import { useNavigation } from "@react-navigation/native";
+import Slides from "../data/data";
+import SliderItem from "../components/sliderItem";
+
 import {
   View,
   Animated,
   FlatList,
   StyleSheet,
   Dimensions,
-  Button,
   Text,
   Image,
 } from "react-native";
-import { useNavigation } from "@react-navigation/native"; // Import useNavigation
-import Slides from "../data/data";
-import SliderItem from "../components/sliderItem";
 
+// this is the pagination section x.x.x.x.x
 const Pagination = ({ slides, scrollX }) => {
-  const navigation = useNavigation(); // Get navigation from the hook
+  const navigation = useNavigation();
 
   return (
     <View style={styles.paginationContainer}>
@@ -49,13 +50,14 @@ const Pagination = ({ slides, scrollX }) => {
     </View>
   );
 };
+// end of the pagination section x.x.x.x.x
 
 const screenWidth = Dimensions.get("window").width;
-const { width, height } = Dimensions.get("screen");
 
+// this is the slider section x.x.x.x.x.x
 const Slider = () => {
   const scrollX = useRef(new Animated.Value(0)).current;
-  const navigation = useNavigation(); // Get navigation from the hook
+  const navigation = useNavigation();
 
   return (
     <View style={styles.container}>
@@ -73,13 +75,18 @@ const Slider = () => {
       />
       <Pagination slides={Slides} scrollX={scrollX} />
       <View style={styles.quadrant_down}></View>
-      <View style={styles.quadrant_up}><Image
+      <View style={styles.quadrant_up}>
+        <Image
           source={require("../assets/logo.png")}
           style={styles.slideLogo}
-        /></View>
+        />
+      </View>
     </View>
   );
 };
+// end of the slider section x.x.x.x.x.x.x.x
+
+// this.is.the.Styling.for.the.Slider.file.xx0xx0x0x0x0x0x0x0x0x0x xooxoxoxoxoxoxoxoxoxoxoxoxoxoxoxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.xoxoxoxoxoxxxxxxxxxxxxxxxx
 
 const styles = StyleSheet.create({
   dot: {

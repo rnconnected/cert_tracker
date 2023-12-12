@@ -3,7 +3,7 @@ import { View, Text, TextInput, StyleSheet, Dimensions } from "react-native";
 
 const { width, height } = Dimensions.get("screen");
 
-const InputArea = ({ label }) => {
+const InputArea = ({ label, isPassword, onValueChange, setValue }) => {
   const [isFocused, setIsFocused] = useState(false);
   const [text, setText] = useState("");
 
@@ -30,7 +30,9 @@ const InputArea = ({ label }) => {
         style={styles.input}
         onFocus={handleFocus}
         onBlur={handleBlur}
-        onChangeText={(inputText) => setText(inputText)}
+        onChangeText={onValueChange}
+        secureTextEntry={isPassword}
+        value={setValue}
       />
     </View>
   );
@@ -57,7 +59,6 @@ const styles = StyleSheet.create({
     borderBottomColor: "green",
     fontSize: 16,
     width: "100%",
-    // height: "100%",
   },
 });
 

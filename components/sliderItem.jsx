@@ -47,6 +47,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     padding: 10,
     marginBottom: 10,
+    color: "#EE5F74",
   },
   description: {
     fontSize: 16,

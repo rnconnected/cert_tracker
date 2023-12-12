@@ -1,30 +1,22 @@
 import React, { useState } from "react";
+import { CheckBox } from "react-native-elements";
+import InputArea from "../components/inputArea";
 import { AntDesign } from "@expo/vector-icons";
+import { firebase } from "../firebase/firebase";
+import "firebase/compat/auth";
 import {
   View,
   Text,
   StyleSheet,
   Dimensions,
-  Button,
   TouchableOpacity,
+  TouchableWithoutFeedback,
+  Keyboard,
 } from "react-native";
-import { CheckBox } from "react-native-elements";
-import InputArea from "../components/inputArea";
 
 const { width, height } = Dimensions.get("screen");
 
 const Signup = () => {
-  const [isFocused, setIsFocused] = useState(false);
-  const [text, setText] = useState("");
-
-  const handleFocus = () => {
-    setIsFocused(true);
-  };
-
-  const handleBlur = () => {
-    setIsFocused(false);
-  };
-
   const [isChecked, setIsChecked] = useState(false);
   const handleCheckboxToggle = () => {
     setIsChecked(!isChecked);
@@ -39,48 +31,74 @@ const Signup = () => {
   const handlePressOut = () => {
     setIsPressed(false);
   };
+
+  // setting the values for the signup
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [address, setAddress] = useState("");
+  const [city, setCity] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleSignup = () => {
+    firebase.auth().createUserWithEmailAndPassword(email, password).then();
+  };
+
   return (
-    <View style={styles.container}>
-      <View style={styles.quadrant_up}></View>
-      <View style={styles.quadrant_down}></View>
-      <Text style={styles.bold}>Create an account</Text>
-      <View style={styles.form}>
-        <InputArea label=" Name" />
-        <InputArea label="Email" />
-        <InputArea label="Address" />
-        <InputArea label="City" />
-        <InputArea label="Enter Password" />
-        <InputArea label="Re-enter Password" />
-        <CheckBox
-          title="I agree to the terms and conditions"
-          checked={isChecked}
-          onPress={handleCheckboxToggle}
-          containerStyle={styles.checkbox}
-        />
-        <TouchableOpacity
-          activeOpacity={0.8}
-          style={[styles.touchableOpacity, isPressed && styles.pressed]}
-          onPressIn={handlePressIn}
-          onPressOut={handlePressOut}
-        >
-          <View style={styles.signupBtn}>
-            <Text style={styles.signupText}>Sign up</Text>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+      <View style={styles.container}>
+        <View style={styles.quadrant_up}></View>
+        <View style={styles.quadrant_down}></View>
+        <Text style={styles.bold}>Create an account</Text>
+        <View style={styles.form}>
+          <InputArea label=" Name" onValueChange={setName} setValue={name} />
+          <InputArea label="Email" onValueChange={setEmail} setValue={email} />
+          <InputArea
+            label="Address"
+            onValueChange={setAddress}
+            setValue={address}
+          />
+          <InputArea label="City" onValueChange={setCity} setValue={city} />
+          <InputArea
+            isPassword={true}
+            label="Enter Password"
+            onValueChange={setPassword}
+            setValue={password}
+          />
+          <InputArea isPassword={true} label="Re-enter Password" />
+          <CheckBox
+            title="I agree to the terms and conditions"
+            checked={isChecked}
+            onPress={handleCheckboxToggle}
+            containerStyle={styles.checkbox}
+          />
+          <TouchableOpacity
+            activeOpacity={0.8}
+            style={[styles.touchableOpacity, isPressed && styles.pressed]}
+            onPressIn={handlePressIn}
+            onPressOut={handlePressOut}
+            onPress={handleSignup}
+          >
+            <View style={styles.signupBtn}>
+              <Text style={styles.signupText}>Sign up</Text>
+            </View>
+          </TouchableOpacity>
+
+          <View style={styles.googleBtn}>
+            <AntDesign name="google" size={24} color="black" />
+            <Text style={{ fontSize: 17 }}>Sign up with Google</Text>
           </View>
-        </TouchableOpacity>
 
-        <View style={styles.googleBtn}>
-          <AntDesign name="google" size={24} color="black" />
-          <Text style={{ fontSize: 17 }}>Sign up with Google</Text>
-        </View>
-
-        <View style={styles.signAlt}>
-          <Text style={{ fontSize: 17 }}>Already have an account?</Text>
-          <Text style={{ color: "brown", fontSize: 17 }}>Sign in</Text>
+          <View style={styles.signAlt}>
+            <Text style={{ fontSize: 17 }}>Already have an account?</Text>
+            <Text style={{ color: "brown", fontSize: 17 }}>Sign in</Text>
+          </View>
         </View>
       </View>
-    </View>
+    </TouchableWithoutFeedback>
   );
 };
+
+// this is the styling for the signup page
 
 const styles = StyleSheet.create({
   container: {
@@ -113,7 +131,7 @@ const styles = StyleSheet.create({
     color: "#39115B",
   },
   form: {
-    marginTop: 50,
+    marginTop: 5,
   },
   checkbox: {
     marginTop: 30,
