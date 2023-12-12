@@ -3,7 +3,8 @@ import { CheckBox } from "react-native-elements";
 import InputArea from "../components/inputArea";
 import { AntDesign } from "@expo/vector-icons";
 import { firebase } from "../firebase/firebase";
-import "firebase/compat/auth";
+import { useNavigation } from "@react-navigation/native";
+
 import {
   View,
   Text,
@@ -17,6 +18,7 @@ import {
 const { width, height } = Dimensions.get("screen");
 
 const Signup = () => {
+  const navigation = useNavigation();
   const [isChecked, setIsChecked] = useState(false);
   const handleCheckboxToggle = () => {
     setIsChecked(!isChecked);
@@ -90,7 +92,12 @@ const Signup = () => {
 
           <View style={styles.signAlt}>
             <Text style={{ fontSize: 17 }}>Already have an account?</Text>
-            <Text style={{ color: "brown", fontSize: 17 }}>Sign in</Text>
+            <Text
+              style={{ color: "brown", fontSize: 17 }}
+              onPress={() => navigation.navigate("Signin")}
+            >
+              Sign in
+            </Text>
           </View>
         </View>
       </View>

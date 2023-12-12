@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, Text, TextInput, StyleSheet, Dimensions } from "react-native";
 
 const { width, height } = Dimensions.get("screen");
@@ -7,12 +7,26 @@ const InputArea = ({ label, isPassword, onValueChange, setValue }) => {
   const [isFocused, setIsFocused] = useState(false);
   const [text, setText] = useState("");
 
+  useEffect(() => {
+    if (setValue) {
+      setIsFocused(true);
+      setText(setValue);
+    }
+  }, [setValue]);
+
   const handleFocus = () => {
     setIsFocused(true);
   };
 
   const handleBlur = () => {
-    setIsFocused(false);
+    if (!text) {
+      setIsFocused(false);
+    }
+  };
+
+  const handleChangeText = (inputText) => {
+    setText(inputText);
+    onValueChange(inputText);
   };
 
   return (
@@ -30,9 +44,9 @@ const InputArea = ({ label, isPassword, onValueChange, setValue }) => {
         style={styles.input}
         onFocus={handleFocus}
         onBlur={handleBlur}
-        onChangeText={onValueChange}
+        onChangeText={handleChangeText}
         secureTextEntry={isPassword}
-        value={setValue}
+        value={text}
       />
     </View>
   );
