@@ -1,10 +1,15 @@
+import "@react-native-async-storage/async-storage";
 import React, { useState } from "react";
 import { CheckBox } from "react-native-elements";
 import InputArea from "../components/inputArea";
 import { AntDesign } from "@expo/vector-icons";
-import { firebase } from "../firebase/firebase";
+import { firebaseConfig, app, analytics } from "../firebase/firebase";
 import { useNavigation } from "@react-navigation/native";
-
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  sendEmailVerification,
+} from "firebase/auth";
 import {
   View,
   Text,
@@ -13,6 +18,7 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
   Keyboard,
+  ScrollView,
 } from "react-native";
 
 const { width, height } = Dimensions.get("screen");
@@ -41,66 +47,97 @@ const Signup = () => {
   const [city, setCity] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleSignup = () => {
-    firebase.auth().createUserWithEmailAndPassword(email, password).then();
-  };
+    const handleSignup = async () => {
+      try {
+        // Create a new user in Firebase
+        const userCredential = await createUserWithEmailAndPassword(
+          app.auth(), // Pass the Firebase Auth instance directly
+          email,
+          password
+        );
+
+        // Get the user from the userCredential
+        const user = userCredential.user;
+
+        // Send email verification
+        await sendEmailVerification(user);
+
+        // Display a success message
+        alert(
+          "Account created successfully. A verification email has been sent to your email address. Please click the link in the email to verify your account."
+        );
+      } catch (error) {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        console.error(`Error creating user: ${errorCode} - ${errorMessage}`);
+      }
+    };
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-      <View style={styles.container}>
-        <View style={styles.quadrant_up}></View>
-        <View style={styles.quadrant_down}></View>
-        <Text style={styles.bold}>Create an account</Text>
-        <View style={styles.form}>
-          <InputArea label=" Name" onValueChange={setName} setValue={name} />
-          <InputArea label="Email" onValueChange={setEmail} setValue={email} />
-          <InputArea
-            label="Address"
-            onValueChange={setAddress}
-            setValue={address}
-          />
-          <InputArea label="City" onValueChange={setCity} setValue={city} />
-          <InputArea
-            isPassword={true}
-            label="Enter Password"
-            onValueChange={setPassword}
-            setValue={password}
-          />
-          <InputArea isPassword={true} label="Re-enter Password" />
-          <CheckBox
-            title="I agree to the terms and conditions"
-            checked={isChecked}
-            onPress={handleCheckboxToggle}
-            containerStyle={styles.checkbox}
-          />
-          <TouchableOpacity
-            activeOpacity={0.8}
-            style={[styles.touchableOpacity, isPressed && styles.pressed]}
-            onPressIn={handlePressIn}
-            onPressOut={handlePressOut}
-            onPress={handleSignup}
-          >
-            <View style={styles.signupBtn}>
-              <Text style={styles.signupText}>Sign up</Text>
-            </View>
-          </TouchableOpacity>
-
-          <View style={styles.googleBtn}>
-            <AntDesign name="google" size={24} color="black" />
-            <Text style={{ fontSize: 17 }}>Sign up with Google</Text>
-          </View>
-
-          <View style={styles.signAlt}>
-            <Text style={{ fontSize: 17 }}>Already have an account?</Text>
-            <Text
-              style={{ color: "brown", fontSize: 17 }}
-              onPress={() => navigation.navigate("Signin")}
+      <ScrollView
+        contentContainerStyle={styles.scrollContainer}
+        keyboardShouldPersistTaps="handled"
+      >
+        <View style={styles.container}>
+          <View style={styles.quadrant_up}></View>
+          <View style={styles.quadrant_down}></View>
+          <Text style={styles.bold}>Create an account</Text>
+          <View style={styles.form}>
+            <InputArea label=" Name" onValueChange={setName} setValue={name} />
+            <InputArea
+              label="Email"
+              onValueChange={setEmail}
+              setValue={email}
+            />
+            <InputArea
+              label="Address"
+              onValueChange={setAddress}
+              setValue={address}
+            />
+            <InputArea label="City" onValueChange={setCity} setValue={city} />
+            <InputArea
+              isPassword={true}
+              label="Enter Password"
+              onValueChange={setPassword}
+              setValue={password}
+            />
+            <InputArea isPassword={true} label="Re-enter Password" />
+            <CheckBox
+              title="I agree to the terms and conditions"
+              checked={isChecked}
+              onPress={handleCheckboxToggle}
+              containerStyle={styles.checkbox}
+            />
+            <TouchableOpacity
+              activeOpacity={0.8}
+              style={[styles.touchableOpacity, isPressed && styles.pressed]}
+              onPressIn={handlePressIn}
+              onPressOut={handlePressOut}
+              onPress={() => handleSignup()}
             >
-              Sign in
-            </Text>
+              <View style={styles.signupBtn}>
+                <Text style={styles.signupText}>Sign up</Text>
+              </View>
+            </TouchableOpacity>
+
+            <View style={styles.googleBtn}>
+              <AntDesign name="google" size={24} color="black" />
+              <Text style={{ fontSize: 17 }}>Sign up with Google</Text>
+            </View>
+
+            <View style={styles.signAlt}>
+              <Text style={{ fontSize: 17 }}>Already have an account?</Text>
+              <Text
+                style={{ color: "brown", fontSize: 17 }}
+                onPress={() => navigation.navigate("Signin")}
+              >
+                Sign in
+              </Text>
+            </View>
           </View>
         </View>
-      </View>
+      </ScrollView>
     </TouchableWithoutFeedback>
   );
 };
@@ -108,6 +145,11 @@ const Signup = () => {
 // this is the styling for the signup page
 
 const styles = StyleSheet.create({
+  scrollContainer: {
+    flexGrow: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
   container: {
     width: width,
     height: height,

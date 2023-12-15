@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import InputArea from "../components/inputArea";
 import { AntDesign } from "@expo/vector-icons";
 import { firebase } from "../firebase/firebase";
@@ -18,10 +18,9 @@ import {
 
 const { width, height } = Dimensions.get("screen");
 
-const Signin = () => {
-  const [isPressed, setIsPressed] = useState(false);
-  const [isKeyboardVisible, setKeyboardVisible] = useState(false);
+const Verify = () => {
   const navigation = useNavigation();
+  const [isPressed, setIsPressed] = useState(false);
 
   const handlePressIn = () => {
     setIsPressed(true);
@@ -31,37 +30,13 @@ const Signin = () => {
     setIsPressed(false);
   };
 
-  useEffect(() => {
-    const keyboardDidShowListener = Keyboard.addListener(
-      "keyboardDidShow",
-      () => {
-        setKeyboardVisible(true);
-      }
-    );
-    const keyboardDidHideListener = Keyboard.addListener(
-      "keyboardDidHide",
-      () => {
-        setKeyboardVisible(false);
-      }
-    );
-
-    return () => {
-      keyboardDidHideListener.remove();
-      keyboardDidShowListener.remove();
-    };
-  }, []);
-
   // setting the values for the signin
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
       <ScrollView
-        contentContainerStyle={[
-          styles.scrollContainer,
-          !isKeyboardVisible && styles.nonScrollable,
-        ]}
+        contentContainerStyle={styles.scrollContainer}
         keyboardShouldPersistTaps="handled"
       >
         <View style={styles.container}>
@@ -71,9 +46,9 @@ const Signin = () => {
             <Image source={require("../assets/img1.png")} />
           </View>
           <View style={styles.form}>
-            <Text style={styles.bold}>Sign In</Text>
+            <Text style={styles.bold}>Verify your email</Text>
             <Text style={styles.msg}>
-              Sign In Enter your credentials below to log into your account
+              Enter your credentials below to verify your account
             </Text>
             <View style={styles.inputs}>
               <InputArea
@@ -81,20 +56,6 @@ const Signin = () => {
                 onValueChange={setEmail}
                 setValue={email}
               />
-              <InputArea
-                label={"Password"}
-                onValueChange={setPassword}
-                setValue={password}
-                isPassword={true}
-              />
-            </View>
-            <View style={styles.forgotPassword}>
-              <Text
-                style={{ color: "#C73349" }}
-                onPress={() => navigation.navigate("ForgotPassword")}
-              >
-                Forget Password?
-              </Text>
             </View>
             <TouchableOpacity
               activeOpacity={0.8}
@@ -104,29 +65,9 @@ const Signin = () => {
               // onPress={handleSignIn}
             >
               <View style={styles.signupBtn}>
-                <Text
-                  style={styles.signupText}
-                  onPress={() => navigation.navigate("Verify")}
-                >
-                  Sign In
-                </Text>
+                <Text style={styles.signupText}>Verify Email Address</Text>
               </View>
             </TouchableOpacity>
-
-            <View style={styles.googleBtn}>
-              <AntDesign name="google" size={24} color="black" />
-              <Text style={{ fontSize: 17 }}>Sign In with Google</Text>
-            </View>
-
-            <View style={styles.signAlt}>
-              <Text style={{ fontSize: 17 }}>Don't have an account?</Text>
-              <Text
-                style={{ color: "brown", fontSize: 17 }}
-                onPress={() => navigation.navigate("Signup")}
-              >
-                Sign Up
-              </Text>
-            </View>
           </View>
         </View>
       </ScrollView>
@@ -135,6 +76,11 @@ const Signin = () => {
 };
 
 const styles = StyleSheet.create({
+  scrollContainer: {
+    flexGrow: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
   container: {
     width: width,
     height: height,
@@ -176,7 +122,7 @@ const styles = StyleSheet.create({
   form: {
     backgroundColor: "white",
     width: "100%",
-    height: "70%",
+    height: "65%",
     zIndex: -1,
     borderTopRightRadius: 20,
     borderTopLeftRadius: 20,
@@ -189,37 +135,13 @@ const styles = StyleSheet.create({
     width: "70%",
     alignSelf: "center",
   },
-  googleBtn: {
-    marginTop: 35,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    alignSelf: "center",
-    gap: 10,
-  },
   signupBtn: {
-    marginTop: 30,
-    borderRadius: 15,
+    marginTop: 50,
+    borderRadius: 10,
     backgroundColor: "#7E25CA",
     padding: 11,
-    width: "70%",
+    width: "75%",
     alignSelf: "center",
-  },
-  inputs: {
-    alignItems: "center",
-    marginTop: 10,
-  },
-  forgotPassword: {
-    alignItems: "flex-end",
-    marginTop: 30,
-    marginRight: 40,
-  },
-  signAlt: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    marginTop: 30,
-    gap: 3,
   },
   signupText: {
     color: "white",
@@ -229,12 +151,10 @@ const styles = StyleSheet.create({
   pressed: {
     transform: [{ scale: 0.98 }],
   },
-  scrollContainer: {
-    flexGrow: 1,
-  },
-  nonScrollable: {
-    height: height,
+  inputs: {
+    alignItems: "center",
+    marginTop: 10,
   },
 });
 
-export default Signin;
+export default Verify;
